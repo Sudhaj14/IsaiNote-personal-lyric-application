@@ -3,21 +3,28 @@
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 
+type Lyric = {
+  _id: string;
+  title: string;
+  artist: string;
+  content: string;
+};
+
 export default function EditLyricPage() {
   const { id } = useParams()
   const router = useRouter()
-  const [form, setForm] = useState({ title: '', artist: '', content: '' })
+  const [form, setForm] = useState<Lyric>({ title: '', artist: '', content: '', _id: '' })
 
   useEffect(() => {
     fetch(`/api/lyrics`)
       .then(res => res.json())
-      .then(data => {
-        const lyric = data.find((l: any) => l._id === id)
+      .then((data: Lyric[]) => {
+        const lyric = data.find((l) => l._id === id)
         if (lyric) setForm(lyric)
       })
   }, [id])
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     await fetch(`/api/lyrics/${id}`, {
       method: 'PUT',

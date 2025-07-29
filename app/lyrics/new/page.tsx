@@ -53,13 +53,16 @@ export default function AddLyricPage() {
       setForm({ title: '', artist: '', content: '', image: '' })
 
       setTimeout(() => router.push('/lyrics'), 1000)
-    } catch (err: any) {
-      setError(err.message || 'Something went wrong.')
-    } finally {
-      setLoading(false)
-    }
-  }
-
+      } catch (err: unknown) {
+    if (err instanceof Error) {
+      setError(err.message)
+        } else {
+          setError('Something went wrong.')
+        }
+      } finally {
+        setLoading(false) 
+      }
+    };
   if (status === 'loading') return <p className="text-center mt-10">Checking session...</p>
 
   if (!session) {

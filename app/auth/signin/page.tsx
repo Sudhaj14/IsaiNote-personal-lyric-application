@@ -9,7 +9,7 @@ export default function SignInPage() {
   const [password, setPassword] = useState("")
   const router = useRouter()
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const res = await signIn("credentials", {
       email,

@@ -7,7 +7,7 @@ export default function RegisterPage() {
   const [form, setForm] = useState({ name: "", email: "", password: "" })
   const router = useRouter()
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const res = await fetch("/api/register", {
       method: "POST",
