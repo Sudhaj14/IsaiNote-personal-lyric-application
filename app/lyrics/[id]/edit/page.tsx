@@ -34,7 +34,7 @@ export default function EditLyricPage() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-lg mx-auto mt-10 space-y-4 bg-white p-6 shadow rounded">
+      <form onSubmit={handleSubmit} className="space-y-5 bg-black/60 text-white p-4 rounded shadow">
       <h2 className="text-xl font-semibold">Edit Lyric</h2>
       <input
         type="text"
@@ -53,7 +53,7 @@ export default function EditLyricPage() {
         onChange={(e) => setForm({ ...form, content: e.target.value })}
         className="w-full border p-2 rounded"
       />
-      <button className="bg-blue-600 text-white px-4 py-2 rounded">Save</button>
+      <button className="bg-blue-600 text-white px-6 py-2 rounded-4xl">Save</button>
     </form>
   )
 }

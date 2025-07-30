@@ -22,7 +22,7 @@ export default function SignInPage() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-md mx-auto p-4 mt-10 space-y-4 bg-white shadow rounded">
+      <form onSubmit={handleSubmit} className="max-w-md mx-auto p-4 mt-10 space-y-4 bg-black/60 text-white shadow rounded">
       <h2 className="text-xl font-semibold">Sign In</h2>
       <input
         type="email"

@@ -73,7 +73,8 @@ export default function AddLyricPage() {
     <div className="max-w-lg mx-auto mt-10 space-y-6">
       <h1 className="text-2xl font-bold text-center">Add New Lyric</h1>
 
-      <form onSubmit={handleSubmit} className="space-y-4 bg-white p-6 rounded shadow">
+      <form onSubmit={handleSubmit} className="space-y-4 bg-black/60 text-white p-6 rounded shadow">
+
         <input
           type="text"
           name="title"
@@ -110,7 +111,7 @@ export default function AddLyricPage() {
           className="w-full border p-2 rounded"
         />
 
-        {error && <p className="text-red-600 text-sm">{error}</p>}
+        {error && <p className="text-red-900 text-sm">{error}</p>}
         {success && <p className="text-green-600 text-sm">{success}</p>}
 
         <button
