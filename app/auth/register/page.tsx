@@ -12,7 +12,7 @@ export default function RegisterPage() {
     const res = await fetch("/api/register", {
       method: "POST",
       body: JSON.stringify(form),
-    })
+    })  
 
     if (res.ok) router.push("/auth/signin")
     else alert("Failed to register")
