@@ -14,7 +14,7 @@ export async function GET(req: NextRequest, context: { params: { id: string } })
     }
 
     return NextResponse.json(lyric);
-  } catch (error) {
+  } catch  {
     return NextResponse.json({ message: 'Error retrieving lyric' }, { status: 500 });
   }
 }
