@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { toast, ToastContainer } from 'react-toastify'
@@ -17,11 +17,12 @@ export default function LyricsPage() {
   const { data: session } = useSession()
   const [lyrics, setLyrics] = useState<Lyric[]>([])
 
-  const fetchLyrics = async () => {
-    const res = await fetch(`/api/lyrics?userId=${session?.user?.id}`)
+  const fetchLyrics = useCallback(async () => {
+    if (!session?.user?.id) return
+    const res = await fetch(`/api/lyrics?userId=${session.user.id}`)
     const data = await res.json()
     setLyrics(data)
-  }
+  }, [session?.user?.id])
 
   const handleDelete = async (id: string) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this lyric?")
@@ -33,8 +34,8 @@ export default function LyricsPage() {
   }
 
   useEffect(() => {
-    if (session?.user?.id) fetchLyrics()
-  }, [session])
+    fetchLyrics()
+  }, [fetchLyrics])
 
   if (!session) {
     return <p className="text-center mt-10 text-white">Please sign in to view your lyrics.</p>

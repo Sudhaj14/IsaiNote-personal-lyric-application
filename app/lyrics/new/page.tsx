@@ -6,11 +6,18 @@ import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'react-toastify'
 
+interface FormData {
+  title: string
+  artist: string
+  content: string
+  image: string
+}
+
 export default function AddLyricPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
 
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<FormData>({
     title: '',
     artist: '',
     content: '',
