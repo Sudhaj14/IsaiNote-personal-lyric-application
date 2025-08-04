@@ -3,6 +3,8 @@
 import { useSession } from 'next-auth/react'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { motion, AnimatePresence } from 'framer-motion'
+import { toast } from 'react-toastify'
 
 export default function AddLyricPage() {
   const { data: session, status } = useSession()
@@ -12,19 +14,18 @@ export default function AddLyricPage() {
     title: '',
     artist: '',
     content: '',
-    image: '', // 👈 added image URL here
+    image: '',
   })
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [success, setSuccess] = useState('')
+  const [redirecting, setRedirecting] = useState(false)
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setForm({ ...form, [e.target.name]: e.target.value })
     setError('')
-    setSuccess('')
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -49,81 +50,105 @@ export default function AddLyricPage() {
 
       if (!res.ok) throw new Error('Failed to save lyric')
 
-      setSuccess('Lyric added successfully!')
+      toast.success('🎶 Lyric added successfully!', {
+        position: 'top-center',
+        theme: 'dark',
+        style: {
+          backgroundColor: '#1a0000',
+          color: '#ff4c4c',
+          fontWeight: 'bold',
+          borderRadius: '8px',
+        },
+      })
+
       setForm({ title: '', artist: '', content: '', image: '' })
 
-      setTimeout(() => router.push('/lyrics'), 1000)
-      } catch (err: unknown) {
-    if (err instanceof Error) {
-      setError(err.message)
-        } else {
-          setError('Something went wrong.')
-        }
-      } finally {
-        setLoading(false) 
+      setTimeout(() => {
+        setRedirecting(true)
+        setTimeout(() => router.push('/lyrics'), 700)
+      }, 1000)
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message)
+      } else {
+        setError('Something went wrong.')
       }
-    };
-  if (status === 'loading') return <p className="text-center mt-10">Checking session...</p>
-
-  if (!session) {
-    return <p className="text-center mt-10">Please sign in to add lyrics.</p>
+    } finally {
+      setLoading(false)
+    }
   }
 
+  if (status === 'loading') return <p className="text-center mt-10">Checking session...</p>
+  if (!session) return <p className="text-center mt-10">Please sign in to add lyrics.</p>
+
   return (
-    <div className="max-w-lg mx-auto mt-10 space-y-6">
-      <h1 className="text-2xl font-bold text-center">Add New Lyric</h1>
-
-      <form onSubmit={handleSubmit} className="space-y-4 bg-black/60 text-white p-6 rounded shadow">
-
-        <input
-          type="text"
-          name="title"
-          placeholder="Title"
-          value={form.title}
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
-          required
-        />
-        <input
-          type="text"
-          name="artist"
-          placeholder="Artist"
-          value={form.artist}
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
-          required
-        />
-        <textarea
-          name="content"
-          placeholder="Lyrics content"
-          value={form.content}
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
-          rows={6}
-          required
-        />
-        <input
-          type="text"
-          name="image"
-          placeholder="Image URL (optional)"
-          value={form.image}
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
-        />
-
-        {error && <p className="text-red-900 text-sm">{error}</p>}
-        {success && <p className="text-green-600 text-sm">{success}</p>}
-
-        <button
-          type="submit"
-          className={`bg-green-600 text-white px-4 py-2 rounded w-full ${
-            loading ? 'opacity-50 cursor-not-allowed' : ''
-          }`}
-          disabled={loading}
+    <AnimatePresence>
+      {!redirecting && (
+        <motion.div
+          key="form"
+          className="max-w-lg mx-auto mt-10 space-y-6"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.9 }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
         >
-          {loading ? 'Saving...' : 'Save Lyric'}
-        </button>
-      </form>
-    </div>
+          <h1 className="text-3xl font-bold text-center text-white drop-shadow">
+            Add New Lyric
+          </h1>
+
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-4 bg-black/60 backdrop-blur-sm text-white p-6 rounded-xl shadow-xl border border-red-900"
+          >
+            {['title', 'artist', 'image'].map((field) => (
+              <input
+                key={field}
+                type="text"
+                name={field}
+                placeholder={
+                  field === 'image' ? 'Image URL (optional)' : field.charAt(0).toUpperCase() + field.slice(1)
+                }
+                value={(form as any)[field]}
+                onChange={handleChange}
+                className="w-full border border-red-700 bg-black/40 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 transition-all duration-300 placeholder-red-300"
+                required={field !== 'image'}
+              />
+            ))}
+
+            <textarea
+              name="content"
+              placeholder="Lyrics content"
+              value={form.content}
+              onChange={handleChange}
+              className="w-full border border-red-700 bg-black/40 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 transition-all duration-300 placeholder-red-300"
+              rows={6}
+              required
+            />
+
+            {error && (
+              <motion.p
+                className="text-red-400 text-sm"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+              >
+                {error}
+              </motion.p>
+            )}
+
+            <motion.button
+              type="submit"
+              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.02 }}
+              className={`bg-red-700 hover:bg-red-800 transition-all duration-300 text-white px-4 py-2 rounded-lg w-full shadow-md ${
+                loading ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
+              disabled={loading}
+            >
+              {loading ? 'Saving...' : 'Save Lyric'}
+            </motion.button>
+          </form>
+        </motion.div>
+      )}
+    </AnimatePresence>
   )
 }

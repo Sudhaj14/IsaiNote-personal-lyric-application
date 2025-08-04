@@ -14,7 +14,8 @@ export default function HomePage() {
     <div>
       {session ? (
         <div className="text-center space-y-6">
-          <h1 className="text-3xl font-bold">Welcome back, {session.user?.name}</h1>
+          <h2 className="text-3xl font-bold text-center text-white mb-6">Welcome Back 👋</h2>
+
           <Link
             href="/lyrics"
             className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
