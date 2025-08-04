@@ -108,7 +108,7 @@ export default function AddLyricPage() {
                 placeholder={
                   field === 'image' ? 'Image URL (optional)' : field.charAt(0).toUpperCase() + field.slice(1)
                 }
-                value={(form as any)[field]}
+                value={form[field as keyof typeof form]}
                 onChange={handleChange}
                 className="w-full border border-red-700 bg-black/40 text-white p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 transition-all duration-300 placeholder-red-300"
                 required={field !== 'image'}
