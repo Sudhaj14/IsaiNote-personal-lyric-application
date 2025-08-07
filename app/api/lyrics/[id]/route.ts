@@ -2,7 +2,13 @@ import { connectDB } from '@/lib/mongodb'
 import Lyrics from '@/models/Lyrics'
 import { NextRequest, NextResponse } from 'next/server'
 
-export async function GET(req: NextRequest, context: { params: { id: string } }) {
+type Params = {
+  params: {
+    id: string;
+  };
+};
+
+export async function GET(req: NextRequest, context: Params) {
   const { id } = context.params;
 
   await connectDB();
@@ -19,8 +25,8 @@ export async function GET(req: NextRequest, context: { params: { id: string } })
   }
 }
 
-export async function PUT(req: NextRequest, context: { params: { id: string } }) {
-  const { id } = context.params;
+export async function PUT(req: NextRequest, context: Params) {
+  const { id } = context.params; // ✅ moved from parameter to function body
 
   const { title, artist, content } = await req.json();
   await connectDB();
@@ -34,8 +40,8 @@ export async function PUT(req: NextRequest, context: { params: { id: string } })
   return NextResponse.json(updated);
 }
 
-export async function DELETE(req: NextRequest, context: { params: { id: string } }) {
-  const { id } = context.params;
+export async function DELETE(req: NextRequest, context: Params) {
+  const { id } = context.params; // ✅ moved here too
 
   await connectDB();
   await Lyrics.findByIdAndDelete(id);
